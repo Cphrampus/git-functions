@@ -47,12 +47,14 @@ awk -v len="$len" '{print ($1 < 0) ? (len + $1) : $1}'
 
 for i in $items
 do
+	# make sure index is in range
 	if [[ $i -gt $len ]] || [[ $i -le 0 ]]
 	then
 		echo -n "$i is out of range!"
 		echo " $len changed file$([[ $len -gt 1 ]] && echo s)"
 		exit
 	fi
+	# otherwise add to list
 	indices="$indices${i}p;"
 done
 
