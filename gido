@@ -1,12 +1,41 @@
 #!/bin/bash
 
+usage="usage: $0 [-t -h] command file [file]
+-t: test, dry run, just print what would be run
+-h: display this help"
+
 if [[ $# -lt 2 ]]
 then
-	echo "usage: $0 command file [file]"
+	echo $usage
 	exit
 fi
 
+num_flags=0
+dry=true
+
+while getopts ":th:" opt
+do
+	case $opt in
+		h)
+			echo "-h was triggered!" >&2
+			echo $usage
+			exit
+			;;
+		t)
+			echo "-t was triggered!" >&2
+			dry=true
+			((num_flags++))
+			;;
+		\?)
+			echo "Invalid option: -$OPTARG" >&2
+			((num_flags++))
+			;;
+	esac
+done
+
 len=$(git status -s | wc -l)
+
+shift $num_flags
 
 command=$1
 shift
@@ -26,4 +55,6 @@ do
 	indices="$indices${i}p;"
 done
 
-git $command $(git status -s | cut -c4- | sed -n "$indices")
+command="git $command $(git status -s | cut -c4- | sed -n "$indices")"
+
+[[ $dry ]] && echo $command || eval command
