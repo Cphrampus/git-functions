@@ -10,8 +10,6 @@ then
 	exit
 fi
 
-num_flags=0
-
 args=()
 
 while [ "$1" ]
