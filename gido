@@ -40,7 +40,7 @@ items=$(echo "${args[@]}" |
 tr ',' ' ' |
 tr ' ' '\n' |
 # deal with ranges
-sed 's/\(\d\)-\(\d\)/\1,\2/' |
+sed 's/\([0-9]\)-\([0-9]\)/\1,\2/' |
 # negative indices
 awk -v len="$len" '{print ($1 < 0) ? (len + $1) : $1}'
 )
