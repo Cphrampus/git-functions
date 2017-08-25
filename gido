@@ -12,34 +12,32 @@ fi
 
 num_flags=0
 
-while getopts ":th:" opt
+args=()
+
+while [ "$1" ]
 do
-	case $opt in
-		h)
-			echo "-h was triggered!" >&2
+	case $1 in
+		-h)
 			echo "$usage"
 			exit
 			;;
-		t)
-			echo "-t was triggered!" >&2
+		-t)
 			dry=true
-			((num_flags++))
+			shift
 			;;
-		\?)
-			echo "Invalid option: -$OPTARG" >&2
-			((num_flags++))
+		*)
+			args=(${args[@]} $1)
+			shift
 			;;
 	esac
 done
 
 len=$(git status -s | wc -l)
 
-shift $num_flags
+command=${args[1]}
+args=${args[@]:1}
 
-command=$1
-shift
-
-items=$(echo "$@" |
+items=$(echo "${args[@]}" |
 # deal with csv
 tr ',' ' ' |
 tr ' ' '\n' |
