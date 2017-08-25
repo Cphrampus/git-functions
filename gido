@@ -6,7 +6,7 @@ usage="usage: $0 [-t -h] command file [file]
 
 if [[ $# -lt 2 ]]
 then
-	echo $usage
+	echo "$usage"
 	exit
 fi
 
@@ -18,7 +18,7 @@ do
 	case $opt in
 		h)
 			echo "-h was triggered!" >&2
-			echo $usage
+			echo "$usage"
 			exit
 			;;
 		t)
@@ -63,4 +63,9 @@ done
 
 command="git $command $(git status -s | cut -c4- | sed -n "$indices")"
 
-[[ $dry ]] && echo $command || eval command
+if [[ $dry ]]
+then
+	echo "$command"
+else
+	eval $command
+fi
