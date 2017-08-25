@@ -67,5 +67,5 @@ if [[ $dry ]]
 then
 	echo "$command"
 else
-	eval $command
+	eval "$command"
 fi
