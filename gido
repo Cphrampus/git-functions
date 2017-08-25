@@ -58,7 +58,7 @@ do
 	indices="$indices${i}p;"
 done
 
-command="git $command $(git status -s | cut -c4- | sed -n "$indices")"
+command="git $command $(git status -s | cut -c4- | sed -n "$indices" | tr '\n' ' ')"
 
 if [[ $dry ]]
 then
