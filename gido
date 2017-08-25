@@ -32,7 +32,7 @@ done
 
 len=$(git status -s | wc -l)
 
-command=${args[1]}
+command=${args[0]}
 args=(${args[@]:1})
 
 items=$(echo "${args[@]}" |
