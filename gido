@@ -25,13 +25,12 @@ do
 			;;
 		-t)
 			dry=true
-			shift
 			;;
 		*)
 			args=(${args[@]} $1)
-			shift
 			;;
 	esac
+	shift
 done
 
 len=$(git status -s |
