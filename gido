@@ -1,6 +1,6 @@
 #!/bin/bash
 
-usage="usage: $0 [-t -h] command file [file]
+usage="usage: $0 [-t -h] command filerange
 -t: test, dry run, just print what would be run
 -h: display this help
 filerange: comma or space separated line numbers from git status,
