@@ -5,7 +5,8 @@ usage="usage: $0 [-t -h] command file [file]
 -h: display this help
 filerange: comma or space separated line numbers from git status,
 ranges are also supported in the form x-y, or x-
-x- goes from line number x to the end, negative indices are also supported"
+x- goes from line number x to the end(equivalent to x-$)
+negative indices are also supported"
 
 if [[ $# -lt 2 ]]
 then
@@ -44,7 +45,7 @@ items=$(echo "${args[@]}"			|
 tr ',' ' '							|
 tr ' ' '\n'							|
 # deal with ranges
-sed 's/\([0-9]\)-\([0-9]\)/\1,\2/'	|
+sed 's/\([0-9]\)-\([0-9$]\)/\1,\2/'	|
 # deal with ranges without an end
 sed 's/\([0-9]\)-/\1,$/'			|
 # negative indices
