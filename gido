@@ -2,7 +2,10 @@
 
 usage="usage: $0 [-t -h] command file [file]
 -t: test, dry run, just print what would be run
--h: display this help"
+-h: display this help
+filerange: comma or space separated line numbers from git status,
+ranges are also supported in the form x-y, or x-
+x- goes from line number x to the end, negative indices are also supported"
 
 if [[ $# -lt 2 ]]
 then
