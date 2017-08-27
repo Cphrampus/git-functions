@@ -33,7 +33,7 @@ do
 	shift
 done
 
-len=$(git status -s |
+len=$(git status --porcelain |
 wc -l)
 
 command=${args[0]}
@@ -69,9 +69,9 @@ do
 	fi
 done
 
-command="git $command $(git status -s	|
-cut -c4-								|
-sed -n "$indices"						|
+command="git $command $(git status --porcelain	|
+cut -c4-										|
+sed -n "$indices"								|
 tr '\n' ' ')"
 
 if [[ $dry ]]
