@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TODO add even/odd line option? not supported in BSD sed
-# TODO add flag for if - is negative or 1,i?
-
 usage="usage: $0 [-t -h] command filerange
 -t: test, dry run, just print what would be run
 -h: display this help
