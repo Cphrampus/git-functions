@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO add even/odd line option? not supported in BSD sed
+# TODO add flag for if - is negative or 1,i?
+
 usage="usage: $0 [-t -h] command filerange
 -t: test, dry run, just print what would be run
 -h: display this help
@@ -69,9 +72,16 @@ do
 	fi
 done
 
-command="git $command $(git status --porcelain	|
+command="git $command $(
+# get an easily parsed format
+git status --porcelain	|
+# filter out already added files
+grep -v "^A"									|
+# get rid of prepended symbols
 cut -c4-										|
+# print out the requested lines
 sed -n "$indices"								|
+# convert back into an arg list
 tr '\n' ' ')"
 
 if [[ $dry ]]
