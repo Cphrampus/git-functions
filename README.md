@@ -6,6 +6,11 @@ A, hopefully growing, collection of scripts to help me use git better/easier/mor
 The script, in general, takes a command, or a series of commands, with the last argument being a comma separated list
 of line numbers referring to the files output from git status
 
+e.g.
+```
+gido add 1-3,5,-4,12-
+```
+
 To ensure functionality, have this directory added to your path, or the scripts symlinked to a place that is.
 This will allow you to use gitdo itself, and the other scripts(git-*).
 
