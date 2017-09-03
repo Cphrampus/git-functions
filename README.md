@@ -11,4 +11,7 @@ This will allow you to use gitdo itself, and the other scripts(git-*).
 
 To use the git-* scripts, as long as they are in your PATH, just type git \<name of script after git-\> \<comma separated line numbers\>,
 
-e.g., git addl 1-3,5,-4,12-
+e.g.
+```
+git addl 1-3,5,-4,12-
+```
