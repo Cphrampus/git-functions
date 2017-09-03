@@ -1,0 +1,101 @@
+#!/bin/bash
+
+usage="usage: $0 [-t -h -a] command(s) filerange
+-t: test, dry run, just print what would be run
+-h: display this help
+-a: use all files for command, even already added ones, useful for 'git reset'
+filerange: comma separated line numbers from git status,
+ranges are also supported in the form x-y, or x-
+x- goes from line number x to the end(equivalent to x-$)
+negative indices are also supported"
+
+if [[ $# -lt 2 ]]
+then
+	echo "$usage"
+	exit
+fi
+
+args=()
+
+while [ "$1" ]
+do
+	case $1 in
+		-h)
+			echo "$usage"
+			exit
+			;;
+		-t)
+			dry=true
+			;;
+		-a)
+			all=true
+			;;
+		*)
+			args=(${args[@]} $1)
+			;;
+	esac
+	shift
+done
+
+# if all files should be shown, search for line starting with anything,
+# i.e., all lines, else, line starting with anything followed by anything
+# but a space, which would indicate already staged files
+file_pattern="^.$([[ ! $all ]] && echo "[^ ]")"
+len=$(git status --porcelain	|
+grep -c "$file_pattern")
+
+command=$(echo "${args[@]}" |
+# get all but last element
+awk '{$NF=""; print $0}')
+
+filerange=$(echo "${args[@]}" |
+# get last element
+awk '{print $NF}')
+
+items=$(echo "$filerange"			|
+# deal with csv
+tr ',' ' '							|
+tr ' ' '\n'							|
+# deal with ranges
+sed 's/\([0-9]\)-\([0-9$]\)/\1,\2/'	|
+# deal with ranges without an end
+sed 's/\([0-9]\)-/\1,$/'			|
+# negative indices
+awk -v len="$len" '{print ($1 < 0) ? (len + $1 + 1) : $1}')
+
+for i in $items
+do
+	# make sure index is in range
+	if [[ $i =~ [0-9]+$ && ( $i -gt $len || $i -le 0 ) ]]
+	then
+		echo -n "$i is out of range!"
+		echo " $len changed file$([[ $len -gt 1 ]] && echo s)"
+		exit
+	fi
+	if [[ $i =~ [0-9]+ ]]
+	then
+		# otherwise add to list
+		indices="$indices${i}p;"
+	else
+		command="$command $i"
+	fi
+done
+
+command="${command%% } $(
+# get an easily parsed format
+git status --porcelain	|
+# filter out already added files
+grep "$file_pattern"	|
+# get rid of prepended symbols
+cut -c4-				|
+# print out the requested lines
+sed -n "$indices"		|
+# convert back into an arg list
+tr '\n' ' ')"
+
+if [[ $dry ]]
+then
+	echo "$command"
+else
+	eval "$command"
+fi
