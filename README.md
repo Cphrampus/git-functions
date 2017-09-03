@@ -8,7 +8,7 @@ of line numbers referring to the files output from git status
 
 e.g.
 ```
-gido add 1-3,5,-4,12-
+gitdo add 1-3,5,-4,12-
 ```
 
 To ensure functionality, have this directory added to your path, or the scripts symlinked to a place that is.
