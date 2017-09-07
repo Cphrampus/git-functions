@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# test if command is executable
 if command -v "$SCRIPT_NAME" >/dev/null 2>&1
 then
 	pass
