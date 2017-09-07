@@ -53,7 +53,7 @@ pass() {
 
 # print colored failure message
 fail() {
-	echo -e "$FAIL_COLOR fail $NONE"
+	echo -e "$FAIL_COLOR fail $([[ $1 ]] && echo ": $*")$NONE"
 	((NUM_TOTAL++))
 }
 
@@ -64,11 +64,11 @@ compare() {
 	then
 		pass
 	else
-		fail
+		fail ""
 	fi
 }
 
 print_stats() {
-	[[ $NUM_TOTAL = 0 ]] && echo "zero tests run!"
+	[[ $NUM_TOTAL = 0 ]] && echo "zero tests run!" && exit
 	printf "$NUM_PASSED of $NUM_TOTAL tests (%s%%)" $(echo "scale=1;$NUM_PASSED/$NUM_TOTAL*100" | bc)
 }
