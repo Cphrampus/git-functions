@@ -7,11 +7,14 @@ touch 1
 output=$($SCRIPT_NAME -t add 1)
 expected="git add tests/1"
 
+# trim trialing spacees
+output=${output%% }
+
 if [ "$output" = "$expected" ]
 then
 	pass
 else
-	fail "$output does not equal $expected"
+	fail "'$output' does not equal '$expected'"
 fi
 
 rm 1
