@@ -19,6 +19,7 @@ range-indices
 range-to-end
 range-to-undefined-end
 negative-index
+out-of-range
 complex
 )
 
