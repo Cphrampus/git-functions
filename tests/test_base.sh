@@ -64,11 +64,11 @@ compare() {
 	then
 		pass
 	else
-		fail ""
+		fail "'$1' does not match '$2'"
 	fi
 }
 
 print_stats() {
 	[[ $NUM_TOTAL = 0 ]] && echo "zero tests run!" && exit
-	printf "$NUM_PASSED of $NUM_TOTAL tests (%s%%)" $(echo "scale=1;$NUM_PASSED/$NUM_TOTAL*100" | bc)
+	printf "$NUM_PASSED of $NUM_TOTAL tests (%s%%)" $(echo "scale=1;$NUM_PASSED*100/$NUM_TOTAL" | bc)
 }
