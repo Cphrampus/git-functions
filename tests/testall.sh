@@ -11,7 +11,14 @@ clean_up() {
 	git stash pop &> /dev/null
 }
 
-tests=($(echo test-{existance,simple-index,{multiple,range}-indices,range-to-{,undefined-}end}.sh))
+tests=(
+existance
+simple-index
+multiple-indices
+range-indices
+range-to-end
+range-to-undefined-end
+negative-index)
 
 # get the base for tests
 source ./test_base.sh
@@ -24,7 +31,7 @@ init
 for test in "${tests[@]}"
 do
 	echo "$test"
-	source ./"$test"
+	source ./"test-$test.sh"
 done
 
 clean_up
