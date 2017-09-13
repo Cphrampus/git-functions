@@ -3,11 +3,11 @@
 init() {
 	# save any existing changes
 	git stash &> /dev/null
-	touch {1..15}
+	touch {1..9}
 }
 
 clean_up() {
-	rm {1..15}
+	rm {1..9}
 	git stash pop &> /dev/null
 }
 
