@@ -20,6 +20,7 @@ range-to-end
 range-to-undefined-end
 negative-index
 out-of-range
+complex
 )
 
 # get the base for tests
