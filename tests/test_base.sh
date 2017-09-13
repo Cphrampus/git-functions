@@ -42,7 +42,7 @@ FAIL_COLOR="$ESC$RED$SEP$BOLD$END"
 # define count for number passed/ and total
 NUM_PASSED=0
 NUM_TOTAL=0
-export SCRIPT_NAME=gitdo
+export SCRIPT_NAME=cody
 
 # define the functions that we can use in the other tests
 # print colored pass message
