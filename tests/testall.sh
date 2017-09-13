@@ -26,8 +26,6 @@ complex
 # get the base for tests
 source ./test_base.sh
 
-SCRIPT_NAME=gitdo
-
 init
 
 # run each test

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-output=$($SCRIPT_NAME -t add 1,2)
+output=$($SCRIPT_NAME -t git add 1,2)
 expected="git add tests/1 tests/2"
 
 # trim trialing spaces

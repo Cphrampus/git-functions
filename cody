@@ -59,8 +59,6 @@ then
 	exit
 fi
 
-exit
-
 items=$(echo "$filerange"			|
 # deal with csv
 tr ',' ' '							|
