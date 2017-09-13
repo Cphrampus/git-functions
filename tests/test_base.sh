@@ -64,7 +64,7 @@ compare() {
 	then
 		pass
 	else
-		fail ""
+		fail "'$1' does not match '$2'"
 	fi
 }
 

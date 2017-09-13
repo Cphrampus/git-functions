@@ -1,21 +1,12 @@
 #!/bin/bash
 
-# save any existing changes
-git stash
-touch 1
-
 output=$($SCRIPT_NAME -t add 1)
 expected="git add tests/1"
 
-# trim trialing spacees
+echo $output
+echo $expected
+
+# trim trialing spaces
 output=${output%% }
 
-if [ "$output" = "$expected" ]
-then
-	pass
-else
-	fail "'$output' does not equal '$expected'"
-fi
-
-rm 1
-git stash pop
+compare "$output" "$expected"
