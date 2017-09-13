@@ -18,7 +18,9 @@ multiple-indices
 range-indices
 range-to-end
 range-to-undefined-end
-negative-index)
+negative-index
+complex
+)
 
 # get the base for tests
 source ./test_base.sh
