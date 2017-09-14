@@ -1,7 +1,7 @@
 #!/bin/bash
 
 output=$($SCRIPT_NAME -t git add 1,2-4,-5,6-)
-expected="git add tests/1 tests/2 tests/3 tests/4 tests/5 tests/6 tests/7 tests/8 tests/9"
+expected="git add tests/cody-tests/1 tests/cody-tests/2 tests/cody-tests/3 tests/cody-tests/4 tests/cody-tests/5 tests/cody-tests/6 tests/cody-tests/7 tests/cody-tests/8 tests/cody-tests/9"
 
 # trim trialing spaces
 output=${output%% }
