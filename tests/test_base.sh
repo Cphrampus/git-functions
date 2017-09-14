@@ -42,6 +42,7 @@ FAIL_COLOR="$ESC$RED$SEP$BOLD$END"
 # define count for number passed/ and total
 NUM_PASSED=0
 NUM_TOTAL=0
+export SCRIPT_NAME=cody
 
 # define the functions that we can use in the other tests
 # print colored pass message
@@ -64,11 +65,11 @@ compare() {
 	then
 		pass
 	else
-		fail ""
+		fail "'$1' does not match '$2'"
 	fi
 }
 
 print_stats() {
 	[[ $NUM_TOTAL = 0 ]] && echo "zero tests run!" && exit
-	printf "$NUM_PASSED of $NUM_TOTAL tests (%s%%)" $(echo "scale=1;$NUM_PASSED/$NUM_TOTAL*100" | bc)
+	printf "$NUM_PASSED of $NUM_TOTAL tests (%s%%)" $(echo "scale=1;$NUM_PASSED*100/$NUM_TOTAL" | bc)
 }

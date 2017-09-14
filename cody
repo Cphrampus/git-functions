@@ -52,14 +52,12 @@ filerange=$(echo "${args[@]}" |
 # get last element
 awk '{print $NF}')
 
-if ! [[ "$filerange" =~ [0-9,$-]+$ ]]
+if ! [[ "$filerange" =~ [-0-9,$]+$ ]]
 then
 	echo "filerange $filerange does not match csv pattern"
 	echo "$usage"
 	exit
 fi
-
-exit
 
 items=$(echo "$filerange"			|
 # deal with csv
