@@ -2,7 +2,7 @@
 
 for folder in *-tests
 do
-	echo $folder
+	echo "$folder:"
 	cd $folder
 	./testall.sh
 	cd ..
