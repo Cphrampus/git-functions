@@ -1,2 +1,3 @@
 #!/bin/bash
-gitdo -a reset $@
+
+cody -a git reset "$@"
