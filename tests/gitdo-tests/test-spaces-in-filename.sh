@@ -3,7 +3,7 @@
 touch "this that"
 
 output=$($SCRIPT_NAME -t add -1)
-expected="git add \"this that\""
+expected="git add tests/gitdo-tests/\"this that\""
 
 # trim trialing spaces
 output=${output%% }
