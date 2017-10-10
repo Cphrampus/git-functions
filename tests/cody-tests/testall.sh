@@ -2,7 +2,7 @@
 
 init() {
 	# save any existing changes
-	git stash &> /dev/null
+	git stash -u &> /dev/null
 	touch {1..9}
 }
 
