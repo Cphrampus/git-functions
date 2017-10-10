@@ -79,13 +79,15 @@ done
 
 command="git $command $(
 # get an easily parsed format
-git status --porcelain							|
+git status --porcelain	|
 # filter out already added files
-grep "$file_pattern"							|
+grep "$file_pattern"	|
 # get rid of prepended symbols
-cut -c4-										|
+cut -c4-				|
 # print out the requested lines
-sed -n "$indices"								|
+sed -n "$indices"		|
+# quote filenames with spaces
+sed 's/^\(.* .*\)/"\1"/'|
 # convert back into an arg list
 tr '\n' ' ')"
 
