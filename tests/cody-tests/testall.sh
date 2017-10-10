@@ -2,7 +2,7 @@
 
 init() {
 	# save any existing changes
-	git stash &> /dev/null
+	git stash -u &> /dev/null
 	touch {1..9}
 }
 
@@ -21,6 +21,7 @@ range-to-undefined-end
 negative-index
 out-of-range
 complex
+spaces-in-filename
 )
 
 # get the base for tests

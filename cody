@@ -97,6 +97,8 @@ grep "$file_pattern"	|
 cut -c4-				|
 # print out the requested lines
 sed -n "$indices"		|
+# quote filenames with spaces
+sed 's/^\(.* .*\)/"\1"/'|
 # convert back into an arg list
 tr '\n' ' ')"
 
