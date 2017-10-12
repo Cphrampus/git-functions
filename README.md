@@ -3,8 +3,8 @@ A, hopefully growing, collection of scripts to help me use git better/easier/mor
 
 ## Usage
 
-The script, in general, takes a command, or a series of commands, with the last argument being a comma separated list
-of line numbers referring to the files output from git status
+The script, in general, takes a command with the last argument being a comma separated list
+of line numbers referring to the files output from git status, starting at 1
 
 e.g.,
 ```
