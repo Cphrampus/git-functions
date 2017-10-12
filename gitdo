@@ -54,7 +54,7 @@ tr ' ' '\n'							|
 # deal with ranges
 sed 's/\([0-9]\)-\([0-9$]\)/\1,\2/'	|
 # deal with ranges without an end
-sed 's/\([0-9]\)-,/\1,$,/'			|
+sed 's/\([0-9]\)-/\1,$,/'			|
 # negative indices and allowing for dashes followed by non numbers, like --
 awk -v len="$len" '{print ($1 < 0 && $1~/^-[0-9]+$/) ? (len + $1 + 1) : $1}'
 )
