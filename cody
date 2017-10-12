@@ -70,7 +70,7 @@ print (($1~/^-[0-9]+$/) ? (len + $1 + 1) : $1)"-"(($2~/^-[0-9]+$/) ? (len + $2 +
 # deal with ranges
 sed 's/\([0-9]\)-\([0-9$]\)/\1,\2/'	|
 # deal with ranges without an end
-sed 's/\([0-9]\)-\(,|$\)/\1,$/'			|
+sed 's/\([0-9]\)-/\1,$/'			|
 # negative indices and allowing for dashes followed by non numbers, like --
 awk -v len="$len" '{print ($1 < 0 && $1~/^-[0-9]+$/) ? (len + $1 + 1) : $1}'
 )
@@ -95,7 +95,7 @@ done
 
 command="${command%% } $(
 # get an easily parsed format
-git status --porcelain	|
+git status -s	|
 # filter out already added files
 grep "$file_pattern"	|
 # get rid of prepended symbols
