@@ -63,6 +63,10 @@ items=$(echo "$filerange"			|
 # deal with csv
 tr ',' ' '							|
 tr ' ' '\n'							|
+# allow negative indices in ranges
+awk -v len="$len" '/[-0-9]+--[0-9]+/{sub(/--/," -")
+print (($1~/^-[0-9]+$/) ? (len + $1 + 1) : $1)"-"(($2~/^-[0-9]+$/) ? (len + $2 + 1) : $2); next}
+{print $0}' |
 # deal with ranges
 sed 's/\([0-9]\)-\([0-9$]\)/\1,\2/'	|
 # deal with ranges without an end
