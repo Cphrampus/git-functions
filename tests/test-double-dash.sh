@@ -1,7 +1,7 @@
 #!/bin/bash
 
-output=$($SCRIPT_NAME -t git add -- 1,2)
-expected="git add -- 1 2"
+output=$($SCRIPT_NAME -t $COMMAND -- 1,2)
+expected="$([[ $PRE_COMMAND ]] && echo "$PRE_COMMAND ")$COMMAND -- 1 2"
 
 # trim trialing spaces
 output=${output%% }

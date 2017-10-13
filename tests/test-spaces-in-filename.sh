@@ -2,8 +2,8 @@
 
 touch "this that"
 
-output=$($SCRIPT_NAME -t git add -1)
-expected="git add \"this that\""
+output=$($SCRIPT_NAME -t $COMMAND -1)
+expected="$([[ $PRE_COMMAND ]] && echo "$PRE_COMMAND ")$COMMAND \"this that\""
 
 # trim trialing spaces
 output=${output%% }

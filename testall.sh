@@ -13,18 +13,20 @@ clean_up() {
 
 init
 
-for i in gitdo,add cody,"git add"
+# get the base for tests
+source ./tests/test_base.sh
+
+for i in gitdo,git,add cody,,"git add"
 do
 	OLDIFS=$IFS
-	IFS=',' read folder command <<< "${i}"
+	IFS=',' read folder pre_command command <<< "${i}"
 	IFS=$OLDIFS
+
 	export SCRIPT_NAME=$folder
+	export PRE_COMMAND=$pre_command
 	export COMMAND=$command
 
 	echo "Testing $folder"
-
-	# get the base for tests
-	source ./tests/test_base.sh
 
 	# run each test
 	for test in tests/test-*
@@ -32,6 +34,7 @@ do
 		echo "$test"
 		source ./"$test"
 	done
+	echo
 done
 clean_up
 
