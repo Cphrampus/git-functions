@@ -70,5 +70,5 @@ compare() {
 
 print_stats() {
 	[[ $NUM_TOTAL = 0 ]] && echo "zero tests run!" && exit
-	printf "$NUM_PASSED of $NUM_TOTAL tests (%s%%)\n" $(echo "scale=1;$NUM_PASSED*100/$NUM_TOTAL" | bc)
+	printf "$NUM_PASSED of $NUM_TOTAL tests (%s%%)\n" "$(echo "scale=1;$NUM_PASSED*100/$NUM_TOTAL" | bc)"
 }
