@@ -22,6 +22,7 @@ negative-index
 out-of-range
 complex
 spaces-in-filename
+double-dash
 )
 
 # get the base for tests
