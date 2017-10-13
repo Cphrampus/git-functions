@@ -95,7 +95,7 @@ done
 
 command="${command%% } $(
 # get an easily parsed format
-git status --porcelain	|
+git status -s	|
 # filter out already added files
 grep "$file_pattern"	|
 # get rid of prepended symbols
