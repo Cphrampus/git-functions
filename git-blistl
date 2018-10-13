@@ -1,0 +1,2 @@
+#!/bin/bash
+git branch | cut -b3- | numberLines

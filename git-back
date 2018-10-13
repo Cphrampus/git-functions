@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# TODO add ability to change to --hard
+
+git reset --mixed HEAD~${1-1}
