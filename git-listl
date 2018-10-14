@@ -1,2 +1,7 @@
 #!/bin/bash
+
+(($#)) && echo -e "usage: $0
+lists the files with each line numbered to help the user identify the number needed for line based functions" && exit
+
+
 git status -s | cut -b4- | numberLines
