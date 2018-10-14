@@ -1,0 +1,5 @@
+#!/bin/bash
+
+charsToRemove='*'
+
+sed "s/$charsToRemove/ /" | sed = | sed 'N;s/\n/\t/'
