@@ -1,5 +1,50 @@
 #!/bin/bash
 
-# TODO add ability to change to --hard
+usage() {
+	echo -e "usage: $0 [-d] [--hard] [-h|--help] <number>
+	Reset the HEAD of the current git branch back <number> commits
 
-git reset --mixed HEAD~${1-1}
+	-d    do a dry run, printing the command that would be run
+	--hard    do a hard reset instead of the default mixed
+	-h, --help    display this message"
+}
+for arg in "$@"
+do
+	case "$arg" in
+	--hard)
+		type=hard
+		;;
+	-h|--help)
+		usage
+		exit
+		;;
+	-d)
+		vecho=echo
+		;;
+	[[:digit:]]*)
+		# verify arg is only numbers
+		if ! egrep -q "^[0-9]+$" <<< $arg
+		then
+			echo "arg '$arg' is not numeric"
+			exit
+		fi
+		# if number is already set, error, else, set number
+		if [ $number ]
+		then
+			echo "more than one number given"
+			usage
+			exit
+		else
+			number=$arg
+		fi
+		;;
+	*)
+		echo "$arg is not a recognized argument"
+		usage
+		exit
+		;;
+	esac
+done
+
+
+$vecho git reset --${type-mixed} HEAD~${number-1}
