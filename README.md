@@ -25,4 +25,6 @@ e.g.,
 git addl 1-3,5,-4,12-
 ```
 
+The exception to this rule are listl and blistl, as they are *technically* not line based functions, but helpers used to number the lines for the use of the line based functions
+
 The other git-* scripts provide usage statements via the -h or --help flag
