@@ -1,0 +1,6 @@
+#!/bin/bash
+
+(($#)) && echo -e "usage: $0
+lists the branches with each line numbered to help the user identify the number needed for line based functions" && exit
+
+git branch | cut -b3- | numberLines
