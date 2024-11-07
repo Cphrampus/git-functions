@@ -103,9 +103,10 @@ cut -c4-				|
 # print out the requested lines
 sed -n "$indices"		|
 # quote filenames with spaces
-sed 's/^[^"]* [^"]*/"&"/'|
+#sed 's/^[^"]* [^"]*/"&"/'|
 # convert back into an arg list
 tr '\n' ' ')"
+echo "command: \"$command\""
 
 if [[ $dry ]]
 then

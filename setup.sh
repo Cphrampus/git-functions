@@ -6,5 +6,6 @@ do
 	then
 		continue
 	fi
-	ln -s $PWD/$i ${PWD:h}/$i
+	# was $PWD:h, but that is a zsh path modifier
+	ln -s $PWD/$i $(dirname $PWD)/$i
 done

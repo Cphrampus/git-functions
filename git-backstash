@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# get rid of  prefixing like "stash@{0}: On develop: "
+message=$(git stash list |head -n1 | sed 's/^.*[oO]n [^:]\+: //')
+
+# get rid of prefixing for stashes that are commit numbers from merges
+# doesn't currently get rid of trailing pr number, but unsure if I care about that right now, more just to get the ticket number in the right place in the message
+
+if echo $message | awk '{print $1}'| xargs git cat-file -e 2> /dev/null
+then
+    # chop off the commit number
+    newmsg=$(echo $message | cut -d\  -f2-)
+    # this is just a sanity check for what you're getting
+    echo "updated message: '$newmsg' from '$message'"
+    message=$newmsg
+fi
+echo $message | clip
+
+# actually do the pop now that the message was copied
+git stash pop
