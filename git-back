@@ -1,25 +1,31 @@
 #!/bin/bash
 
 usage() {
-	echo -e "usage: $0 [-d] [--hard] [-h|--help] <number>
+	echo -e "usage: $0 [-s|--save] [-t|--test] [--hard] [-h|--help] <number>
 	Reset the HEAD of the current git branch back <number> commits
 
-	-d    do a dry run, printing the command that would be run
-	--hard    do a hard reset instead of the default mixed
-	-h, --help    display this message"
+	-s|--save	copy rolled back messages to clipboard
+	-t|--test	do a dry run, printing the command that would be run, copy message to clipboard
+	--hard		do a hard reset instead of the default mixed
+	-h, --help	display this message"
 }
+
 for arg in "$@"
 do
 	case "$arg" in
-	--hard)
-		type=hard
-		;;
 	-h|--help)
 		usage
 		exit
 		;;
-	-d)
+	--hard)
+		type=hard
+		;;
+	-s|--save)
+		save=true
+		;;
+	-t|--test)
 		vecho=echo
+		save=true
 		;;
 	[[:digit:]]*)
 		# verify arg is only numbers
@@ -46,5 +52,16 @@ do
 	esac
 done
 
+# print the commit messages for what we are rolling back, sans ids
+messages=$(git log --oneline | sed "1,${number-1}p;d" | cut -d\  -f2-)
+echo "$messages"
+
+echo # spacer before reset command is shown
+
+# save to clipboard, removing newlines
+if [[ $save ]]
+then
+    echo "$messages" | tr '\n' ',' | sed 's/,$//' | clip
+fi
 
 $vecho git reset --${type-mixed} HEAD~${number-1}

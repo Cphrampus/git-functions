@@ -1,0 +1,192 @@
+#!/bin/bash
+# git rerequest review if checks have passed
+
+# would be better it the team worked in gh, but alas
+
+function parse-args {
+	options=$(getopt -o ron:hva:c:dtb:pswe --long "review,open,number:,help,verbose,add:,comment:,draft,test,body:,push,show,view,team" -- "$@")
+	eval set -- "$options"
+
+	function usage {
+		echo -e "Usage: $(basename $0) [options]"
+		echo
+		echo -e "Options:
+	-n, --number <pr_number>\tSpecify the pull request number
+	-r, --review\tRe-request review from last reviewers, i.e., ones that reviewed since last request
+	-o, --open\tOpen the review from draft
+	-v, --verbose\tEnable verbose mode
+	-a, --add <reviewer>\tAdd a reviewer
+	-c, --comment <comment>\tAdd a comment after checks pass
+	-d, --draft\tCreate a draft pull request
+	-t, --test\tTest mode (echo commands instead of executing)
+	-b, --body <body>\tSpecify the body content for pr description
+	-p, --push\tPush changes
+	-h, --help\tDisplay this help message
+	-s, --show\tShow the pr
+	-w, --view\tView the pr in the browser,
+	-e, --team\tAdd a team to the pr
+	" |
+	column -ts$'\t'
+	}
+	# parse arguments
+	while true; do
+		case "$1" in
+			-h|--help)
+				usage
+				exit 1
+				;;
+			-n|--number)
+				pr_number=$2
+				shift 2
+				;;
+			-r|--review)
+				rerequest_review=true
+				shift
+				;;
+			-o|--open)
+				open_review=true
+				shift
+				;;
+			-v|--verbose)
+				verbose=true
+				shift
+				;;
+			-a|--add)
+				# reviewers=$2
+				[[ ! $2 ]] && echo "No reviewer specified" && exit 1
+				if [[ "$2" =~ .*,.* ]]
+				then
+					readarray -td, reviewers <<<"$2"
+				else
+					reviewers+=($2)
+				fi
+				# readarray -td, a <<<"$2"; declare -p reviewers;
+				shift 2
+				;;
+			-c|--comment)
+				comment=$2
+				shift 2
+				;;
+			-d|--draft)
+				draft=true
+				shift
+				;;
+			-t|--test)
+				vecho=echo
+				shift
+				;;
+			-b|--body)
+				body=$2
+				shift 2
+				;;
+			-p|--push)
+				push=true
+				shift
+				;;
+			-w|--view)
+				view=true
+				shift
+				;;
+			-s|--show)
+				show=true
+				shift
+				;;
+			-e|--team)
+				team=true
+				shift
+				;;
+			--)
+				shift
+				break
+				;;
+			*)
+				echo "unsupported flag $1"
+				exit 1
+				;;
+		esac
+	done
+}
+
+parse-args "$@"
+# todo add abliity to pass in custom function, e.g., open review when checks pass, but also add a comment
+#x todo add ability to make draft, wait for checks, then open review
+teamMembers=("ardove" "czf-veradigm" "aaronmr5")
+
+function join-array { local IFS=","; echo "$*"; }
+
+function get-reviewers {
+	uniqReviewers=($(echo ${reviewers[@]} | tr ' ' '\n' | sort -u | tr '\n' ' '))
+	join-array ${uniqReviewers[@]}
+}
+
+function reopen_review {
+	# filter requires better logic because it seems to list people multiple times if their review was, for example, dismissed and then requested again and they approved
+	# this should work for people since last review, should be good enough
+	[[ $comment ]] && $vecho gh pr comment $pr_number -b "$comment"
+	gh pr view $pr_number --json latestReviews -q "[
+		.latestReviews[] |
+		select(.author.login != \"$(git config user.name)\" and
+		(.state == \"DISMISSED\" or .state == \"COMMENTED\"))
+	] |
+	map(.author.login) |
+	join(\",\")" |
+	readarray -td, rereviewers
+	reviewers+=("${rereviewers[@]}")
+	[[ $verbose ]] && echo "(Re)Reviewers: $(get-reviewers)"
+	$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
+}
+
+function open_review {
+	[[ $comment ]] && $vecho gh pr comment $pr_number -b "$comment"
+	$vecho gh pr ready $pr_number
+	[[ $reviewers ]] && $vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
+}
+
+[[ $team ]] && reviewers+=("${teamMembers[@]}")
+
+if [[ -n $verbose ]]
+then
+	outfile=/dev/stdout
+	# echo flag values
+	echo "pr_number: ${pr_number-current branch}
+rerequest_review: ${rerequest_review-false}
+open_review: ${open_review-false}
+verbose: ${verbose-false}
+reviewers: $(get-reviewers)
+comment: '$comment'
+draft: ${draft-false}
+body: '$body'
+push: ${push-false}
+view: ${view-false}
+show: ${show-false}
+team: ${team-false}"
+else
+	outfile=/dev/null
+fi
+
+(
+	(
+		[[ $draft ]] && $vecho git pushdraft "$body" &&
+		echo "Draft pushed, giving checks a chance to start before waiting on them"
+	) ||
+	(
+		[[ $push ]] && $vecho git push &&
+		echo "Pushed, giving checks a chance to start before waiting on them"
+	)
+) &&
+# sleep for a second to give checks a chance to start
+sleep 5
+
+# this should wait for the checks to finish and fail if any of them fail
+if gh pr checks --watch --fail-fast > $outfile
+then
+	echo "Checks have passed"
+
+	[[ -n $rerequest_review ]] && echo "requesting review" && reopen_review
+	[[ -n $open_review ]] && echo "opening pr" && open_review
+	[[ $view ]] && gh pr view $pr_number --web
+	[[ $show ]] && gh pr view $pr_number
+else
+	echo "Checks have failed, not requesting review"
+	exit 1
+fi

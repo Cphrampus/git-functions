@@ -1,0 +1,55 @@
+#!/bin/bash
+
+cleanup() {
+	echo "Script exiting..."
+	rm $tempfile
+}
+
+trap cleanup EXIT
+
+# todo function for output formatting for fzf preview, need to figure out what to show
+function getPrPreview {
+	# name=$(awk '{print $NF}' <<< $1 | sed "s/\"//g");
+	# repo=$(sed "s/#.*//" <<< $name);
+	# number=$(sed "s/.*#//" <<< $name);
+	repo=$(awk '{print $(NF-2)}' <<< $1)
+	number=$(awk '{print $(NF-1)}' <<< $1)
+	# more info, but what?
+	# probably pr name, maybe decsription, then formatted reviewers list
+	# will need to do some more specific dedupping for the reviewers, or just use latest and it won't have the full list
+	data=$(gh pr view -R $repo $number --json latestReviews,title,body,url,author)
+	title=$(echo $data | jq ".title" | sed 's/"//g')
+	author=$(echo $data | jq ".author.login" | sed 's/"//g')
+	body=$(echo $data | jq ".body" | sed 's/"//g')
+	echo -e "$title"
+	echo
+	echo -e "Repo: $repo"
+	echo -e "Author: $author"
+	if [[ ! -z $body ]]; then
+		echo
+		echo -e $body
+	fi
+	echo
+	echo -e $(echo $data | jq --tab -C ".latestReviews|map(.author.login+\": \"+.state+\" \"+.submittedAt) | join(\"\n\")" | sed 's/"//g')
+}
+export -f getPrPreview
+
+tempfile=$(mktemp /tmp/git-prchk.XXXXXX)
+echo "$tempfile"
+
+git myprs --json title,repository,number,url > $tempfile
+
+(
+	(
+	cat $tempfile |
+	jq '.[] | .title+" "+.repository.nameWithOwner+" "+(.number|tostring)+" "+.url' |
+	sed 's/"//g' |
+	~/work-scripts/fzf -m --cycle --header "Select which one(s) to view" \
+	--preview-window wrap --preview 'getPrPreview {}'
+	) |
+	#remove quotes
+	sed 's/"//g' | #sed -e 's/#/\/pull\//' -e 's#^#https://github.com/#' |
+	# pull out the url
+	awk '{print $NF}'
+) |xargs -r start chrome
+

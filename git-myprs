@@ -1,2 +1,47 @@
 #!/bin/bash
-gh search prs --involves "@me" --state open
+
+function parse-args {
+	# not using getopt because this is allowing some things to be passed through, which doesn't play nicely with not being parsed
+	# todo maybe add json and jq flags to allow for getopt and not "unsupported" messages, while passing them down?
+	function usage {
+		echo -e "Usage: $(basename $0) [options] [args to pass]" >&2
+		echo >&2
+		echo -e "Options:
+  -h, --help	Display this help message
+  -a, --author	Show PRs authored by @me, default is PRs involved in
+" |
+	column -ts$'\t' >&2
+	}
+	args=()
+	# parse arguments
+	for arg in $@; do
+		case "$1" in
+			-h|--help)
+				usage
+				exit 1
+				;;
+			-a|--author)
+				author=true
+				shift
+				;;
+			--)
+				break
+				;;
+			*)
+				echo "unsupported flag $1, passing through" >&2
+				args+=($arg)
+				;;
+		esac
+	done
+}
+
+parse-args $@
+
+if [[ $author ]]
+then
+	flag="--author"
+fi
+
+gh search prs ${flag---involves} "@me" --state open ${args[@]}
+
+# gh search prs --involves "@me" --state open $@

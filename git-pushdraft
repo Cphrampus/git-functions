@@ -1,0 +1,8 @@
+#!/bin/bash
+
+function get-parentbranch {
+    # might be fragile
+    git log --graph --decorate --simplify-by-decoration --oneline | grep "origin/HEAD" | grep -o "\((.*)\)" | sed 's/[()]//g' | awk '{print $NF}'
+}
+
+gh pr create -d -f -b "$1"
