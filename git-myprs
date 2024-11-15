@@ -9,6 +9,7 @@ function parse-args {
 		echo -e "Options:
   -h, --help	Display this help message
   -a, --author	Show PRs authored by @me, default is PRs involved in
+  -v, --verbose	Enable verbose mode
 " |
 	column -ts$'\t' >&2
 	}
@@ -24,11 +25,15 @@ function parse-args {
 				author=true
 				shift
 				;;
+			-v|--verbose)
+				vecho=echo
+				shift
+			;;
 			--)
 				break
 				;;
 			*)
-				echo "unsupported flag $1, passing through" >&2
+				$vecho "unsupported flag $1, passing through" >&2
 				args+=($arg)
 				;;
 		esac
@@ -43,5 +48,3 @@ then
 fi
 
 gh search prs ${flag---involves} "@me" --state open ${args[@]}
-
-# gh search prs --involves "@me" --state open $@
