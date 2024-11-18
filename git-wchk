@@ -115,7 +115,9 @@ teamMembers=("ardove" "czf-veradigm" "aaronmr5")
 function join-array { local IFS=","; echo "$*"; }
 
 function get-reviewers {
+	# todo doesn't seem to be working, check flow
 	uniqReviewers=($(echo ${reviewers[@]} | tr ' ' '\n' | sort -u | tr '\n' ' '))
+	[[ $verbose ]] && echo "uniq Reviewers array: ${uniqReviewers[@]}"
 	join-array ${uniqReviewers[@]}
 }
 
@@ -132,6 +134,8 @@ function reopen_review {
 	join(\",\")" |
 	readarray -td, rereviewers
 	reviewers+=("${rereviewers[@]}")
+	[[ $verbose ]] && echo "ReReviewers array: ${rereviewers[@]}"
+	[[ $verbose ]] && echo "Reviewers array: ${reviewers[@]}"
 	[[ $verbose ]] && echo "(Re)Reviewers: $(get-reviewers)"
 	$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
 }
@@ -176,6 +180,8 @@ fi
 ) &&
 # sleep for a second to give checks a chance to start
 sleep 5
+
+# todo loop to check if checks have started? then just capture response code for check?
 
 # this should wait for the checks to finish and fail if any of them fail
 if gh pr checks --watch --fail-fast > $outfile

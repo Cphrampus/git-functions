@@ -33,7 +33,7 @@ function parse-args {
 				break
 				;;
 			*)
-				$vecho "unsupported flag $1, passing through" >&2
+				${vecho-:} "unsupported flag $1, passing through" >&2
 				args+=($arg)
 				;;
 		esac

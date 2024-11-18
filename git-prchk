@@ -35,7 +35,7 @@ function getPrPreview {
 export -f getPrPreview
 
 tempfile=$(mktemp /tmp/git-prchk.XXXXXX)
-echo "$tempfile"
+# echo "$tempfile"
 
 git myprs --json title,repository,number,url > $tempfile
 
