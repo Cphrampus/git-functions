@@ -117,7 +117,7 @@ function join-array { local IFS=","; echo "$*"; }
 function get-reviewers {
 	# todo doesn't seem to be working, check flow
 	uniqReviewers=($(echo ${reviewers[@]} | tr ' ' '\n' | sort -u | tr '\n' ' '))
-	[[ $verbose ]] && echo "uniq Reviewers array: ${uniqReviewers[@]}"
+	[[ $verbose ]] && echo "uniq Reviewers array: ${uniqReviewers[@]}" >&2
 	join-array ${uniqReviewers[@]}
 }
 
@@ -134,9 +134,9 @@ function reopen_review {
 	join(\",\")" |
 	readarray -td, rereviewers
 	reviewers+=("${rereviewers[@]}")
-	[[ $verbose ]] && echo "ReReviewers array: ${rereviewers[@]}"
-	[[ $verbose ]] && echo "Reviewers array: ${reviewers[@]}"
-	[[ $verbose ]] && echo "(Re)Reviewers: $(get-reviewers)"
+	[[ $verbose ]] && echo "ReReviewers array: ${rereviewers[@]}" >&2
+	[[ $verbose ]] && echo "Reviewers array: ${reviewers[@]}" >&2
+	[[ $verbose ]] && echo "(Re)Reviewers: $(get-reviewers)" >&2
 	$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
 }
 
