@@ -124,7 +124,6 @@ function get-reviewers {
 function reopen_review {
 	# filter requires better logic because it seems to list people multiple times if their review was, for example, dismissed and then requested again and they approved
 	# this should work for people since last review, should be good enough
-	[[ $comment ]] && $vecho gh pr comment $pr_number -b "$comment"
 	gh pr view $pr_number --json latestReviews -q "[
 		.latestReviews[] |
 		select(.author.login != \"$(git config user.name)\" and
@@ -140,10 +139,9 @@ function reopen_review {
 	$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
 }
 
+#? move adding reviewers outside of opening pr? could be useful to do something like what chris did and have reviewers on a draft while other dependent prs are being reviewed
 function open_review {
-	[[ $comment ]] && $vecho gh pr comment $pr_number -b "$comment"
 	$vecho gh pr ready $pr_number
-	[[ $reviewers ]] && $vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
 }
 
 [[ $team ]] && reviewers+=("${teamMembers[@]}")
@@ -184,12 +182,30 @@ sleep 5
 # todo loop to check if checks have started? then just capture response code for check?
 
 # this should wait for the checks to finish and fail if any of them fail
-if gh pr checks --watch --fail-fast > $outfile
+if [[ $vecho ]] || gh pr checks --watch --fail-fast > $outfile
 then
 	echo "Checks have passed"
 
-	[[ -n $rerequest_review ]] && echo "requesting review" && reopen_review
-	[[ -n $open_review ]] && echo "opening pr" && open_review
+	# this is currenlty common between flows, so don't require one to be triggered to add it
+	[[ $comment ]] && $vecho gh pr comment $pr_number -b "$comment"
+
+	if [[ -n $rerequest_review ]]
+	then
+		echo "requesting review"
+		reopen_review
+	elif [[ -n $open_review ]]
+	then
+		echo "opening pr"
+		open_review
+	fi
+
+	#? is this also desired if nothing is happening with the pr? seems ok, can make a draft and add reviewers, then open it when really ready
+	#? should this only be when not requesting rereview since that will pull the reviewers array?
+	if [[ $reviewers ]] && [[ -z $rerequest_review ]]
+	then
+		$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
+	fi
+
 	[[ $view ]] && gh pr view $pr_number --web
 	[[ $show ]] && gh pr view $pr_number
 else
