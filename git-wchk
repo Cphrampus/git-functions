@@ -107,6 +107,8 @@ function parse-args {
 	done
 }
 
+reviewers=()
+rereviewers=()
 parse-args "$@"
 # todo add abliity to pass in custom function, e.g., open review when checks pass, but also add a comment
 #x todo add ability to make draft, wait for checks, then open review
@@ -121,20 +123,25 @@ function get-reviewers {
 	join-array ${uniqReviewers[@]}
 }
 
+# todo this isn't actually pulling reviewers correctly now, see what's going on
 function reopen_review {
 	# filter requires better logic because it seems to list people multiple times if their review was, for example, dismissed and then requested again and they approved
 	# this should work for people since last review, should be good enough
-	gh pr view $pr_number --json latestReviews -q "[
+	output=$(gh pr view $pr_number --json latestReviews -q "[
 		.latestReviews[] |
 		select(.author.login != \"$(git config user.name)\" and
-		(.state == \"DISMISSED\" or .state == \"COMMENTED\"))
+		(.state == \"DISMISSED\" or .state == \"COMMENTED\" or .state == \"APPROVED\"))
 	] |
 	map(.author.login) |
-	join(\",\")" |
-	readarray -td, rereviewers
+	join(\",\")")
+	# echo "output: $output"
+	# echo $output |
+	# read -td, rereviewers
+	# declare -a rereviewers
+	IFS="," read -r -d $'\n' -a rereviewers <<< "$output"
 	reviewers+=("${rereviewers[@]}")
 	[[ $verbose ]] && echo "ReReviewers array: ${rereviewers[@]}" >&2
-	[[ $verbose ]] && echo "Reviewers array: ${reviewers[@]}" >&2
+	[[ $verbose ]] && echo "new Reviewers array: ${reviewers[@]}" >&2
 	[[ $verbose ]] && echo "(Re)Reviewers: $(get-reviewers)" >&2
 	$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
 }
