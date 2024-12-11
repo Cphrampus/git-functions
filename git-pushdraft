@@ -5,4 +5,4 @@ function get-parentbranch {
     git log --graph --decorate --simplify-by-decoration --oneline | grep "origin/HEAD" | grep -o "\((.*)\)" | sed 's/[()]//g' | awk '{print $NF}'
 }
 
-gh pr create -d -f -b "$1"
+gh pr create -H $(get-current-branch) -dfb "$1"
