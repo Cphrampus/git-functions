@@ -175,7 +175,7 @@ fi
 
 (
 	(
-		[[ $draft ]] && $vecho git pushdraft "\"$body\"" &&
+		[[ $draft ]] && $vecho git pushdraft "$body" &&
 		echo "Draft pushed, giving checks a chance to start before waiting on them"
 	) ||
 	(

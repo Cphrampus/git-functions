@@ -8,5 +8,12 @@ function get-parentbranch {
 function get-current-branch {
 	git branch | awk '/*/{print $2}'
 }
+# todo can make this more robust by adding in general arg parsing, this is the only one now, but it would add extensibility as well as clarity
+if [[ -n "$1" ]]
+then
+    body="$1"
+fi
 
-gh pr create -H $(get-current-branch) -df $([[ -n "$1" ]] && echo " -b '$1'")
+# pr create would push the changes without the -H, but would trigger a forking behavior question that I'd rather just skip as never needed, so push first, then open a PR
+git push -u origin "$(get-current-branch)"
+gh pr create -H "$(get-current-branch)" -df -b "$body"
