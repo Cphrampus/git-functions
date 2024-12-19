@@ -123,14 +123,14 @@ function get-reviewers {
 	join-array ${uniqReviewers[@]}
 }
 
-# todo this isn't actually pulling reviewers correctly now, see what's going on
+# this should be working to pull both commented reviewers, previously approved but now dismissed reviewers, and ones who requested changes, which don't seem to get dismissed like I thought
 function reopen_review {
 	# filter requires better logic because it seems to list people multiple times if their review was, for example, dismissed and then requested again and they approved
 	# this should work for people since last review, should be good enough
 	output=$(gh pr view $pr_number --json latestReviews -q "[
 		.latestReviews[] |
 		select(.author.login != \"$(git config user.name)\" and
-		(.state == \"DISMISSED\" or .state == \"COMMENTED\" or .state == \"APPROVED\"))
+		(.state == \"DISMISSED\" or .state == \"COMMENTED\" or .state == \"CHANGES_REQUESTED\")) |
 	] |
 	map(.author.login) |
 	join(\",\")")
