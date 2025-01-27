@@ -130,7 +130,7 @@ function reopen_review {
 	output=$(gh pr view $pr_number --json latestReviews -q "[
 		.latestReviews[] |
 		select(.author.login != \"$(git config user.name)\" and
-		(.state == \"DISMISSED\" or .state == \"COMMENTED\" or .state == \"CHANGES_REQUESTED\")) |
+			(.state == \"DISMISSED\" or .state == \"COMMENTED\" or .state == \"CHANGES_REQUESTED\"))
 	] |
 	map(.author.login) |
 	join(\",\")")
