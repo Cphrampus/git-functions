@@ -110,9 +110,9 @@ function parse-args {
 reviewers=()
 rereviewers=()
 parse-args "$@"
-# todo add abliity to pass in custom function, e.g., open review when checks pass, but also add a comment
+# todo add ability to pass in custom function, e.g., open review when checks pass, but also add a comment
 #x todo add ability to make draft, wait for checks, then open review
-teamMembers=("ardove" "czf-veradigm" "tylerstarcher")
+teamMembers=("ardove" "czf-veradigm" "jkropapf" "tylerstarcher")
 
 function join-array { local IFS=","; echo "$*"; }
 
