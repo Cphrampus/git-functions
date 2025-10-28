@@ -115,6 +115,7 @@ parse-args "$@"
 teamMembers=(
 	"ardove"
 	"czf-veradigm"
+	# "jkropapf"
 	# "tylerstarcher"
 	)
 
@@ -131,13 +132,13 @@ function get-reviewers {
 function reopen_review {
 	# filter requires better logic because it seems to list people multiple times if their review was, for example, dismissed and then requested again and they approved
 	# this should work for people since last review, should be good enough
-	output=$(gh pr view $pr_number --json latestReviews -q "[
+	output="$(gh pr view $pr_number --json latestReviews -q "[
 		.latestReviews[] |
 		select(.author.login != \"$(git config user.name)\" and
 			(.state == \"DISMISSED\" or .state == \"COMMENTED\" or .state == \"CHANGES_REQUESTED\"))
 	] |
 	map(.author.login) |
-	join(\",\")")
+	join(\",\")"),"
 	# echo "output: $output"
 	# echo $output |
 	# read -td, rereviewers
@@ -147,7 +148,14 @@ function reopen_review {
 	[[ $verbose ]] && echo "ReReviewers array: ${rereviewers[@]}" >&2
 	[[ $verbose ]] && echo "new Reviewers array: ${reviewers[@]}" >&2
 	[[ $verbose ]] && echo "(Re)Reviewers: $(get-reviewers)" >&2
-	$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
+	reviewers=get-reviewers
+	if [[ -z $reviewers ]]
+	then
+		[[ $verbose ]] && echo "No reviewers to re-request review from"
+		return
+	else
+		$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
+	fi
 }
 
 #? move adding reviewers outside of opening pr? could be useful to do something like what chris did and have reviewers on a draft while other dependent prs are being reviewed
