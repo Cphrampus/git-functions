@@ -148,7 +148,7 @@ function reopen_review {
 	[[ $verbose ]] && echo "ReReviewers array: ${rereviewers[@]}" >&2
 	[[ $verbose ]] && echo "new Reviewers array: ${reviewers[@]}" >&2
 	[[ $verbose ]] && echo "(Re)Reviewers: $(get-reviewers)" >&2
-	reviewers=get-reviewers
+	reviewers=$(get-reviewers)
 	if [[ -z $reviewers ]]
 	then
 		[[ $verbose ]] && echo "No reviewers to re-request review from"
