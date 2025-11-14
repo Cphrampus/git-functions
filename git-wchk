@@ -203,6 +203,7 @@ sleep 5
 # this should wait for the checks to finish and fail if any of them fail
 if [[ $vecho ]] || gh pr checks --watch --fail-fast > $outfile
 then
+	play_pass_sound
 	echo "Checks have passed"
 
 	# this is currenlty common between flows, so don't require one to be triggered to add it
@@ -228,6 +229,7 @@ then
 	[[ $view ]] && gh pr view $pr_number --web
 	[[ $show ]] && gh pr view $pr_number
 else
+	play_fail_sound
 	echo "Checks have failed, not requesting review"
 	exit 1
 fi
