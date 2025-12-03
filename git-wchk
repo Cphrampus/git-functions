@@ -1,6 +1,14 @@
 #!/bin/bash
 # git rerequest review if checks have passed
 
+# from bashrc, but guess that isn't loaded
+function play_pass_sound {
+    powershell -noprofile -c "(New-Object Media.SoundPlayer C:/Windows/Media/tada.wav).PlaySync();" &
+}
+function play_fail_sound {
+    powershell -noprofile -c "(New-Object Media.SoundPlayer C:/Windows/Media/ringout.wav).PlaySync();" &
+}
+
 # would be better it the team worked in gh, but alas
 
 function parse-args {
