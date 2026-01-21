@@ -12,7 +12,7 @@ function play_fail_sound {
 # would be better it the team worked in gh, but alas
 
 function parse-args {
-	options=$(getopt -o ron:hva:c:dtb:pswe --long "review,open,number:,help,verbose,add:,comment:,draft,test,body:,push,show,view,team" -- "$@")
+	options=$(getopt -o ron:hva:c:dtb:psweu --long "review,open,number:,help,verbose,add:,comment:,draft,test,body:,push,show,view,team,pfus" -- "$@")
 	eval set -- "$options"
 
 	function usage {
@@ -33,6 +33,7 @@ function parse-args {
 	-s, --show\tShow the pr
 	-w, --view\tView the pr in the browser,
 	-e, --team\tAdd a team to the pr
+	-u, --pfus\tAdd reviewers from 'git pfus' command
 	" |
 	column -ts$'\t'
 	}
@@ -101,6 +102,11 @@ function parse-args {
 				;;
 			-e|--team)
 				team=true
+				shift
+				;;
+			-u|--pfus)
+				# readarray -td, reviewers <<<"$(git pfus)"
+				reviewers+=($(git pfus))
 				shift
 				;;
 			--)
