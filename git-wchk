@@ -1,6 +1,8 @@
 #!/bin/bash
 # git rerequest review if checks have passed
 
+# todo update to check for cursorbot comments before rerequesting review, so that those can be handled
+
 # from bashrc, but guess that isn't loaded
 function play_pass_sound {
     powershell -noprofile -c "(New-Object Media.SoundPlayer C:/Windows/Media/tada.wav).PlaySync();" &
