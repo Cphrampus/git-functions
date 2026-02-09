@@ -242,6 +242,7 @@ then
 		$vecho gh pr edit $pr_number --add-reviewer "$(get-reviewers)"
 	fi
 
+	#? should open in browser be before waiting on checks
 	[[ $view ]] && gh pr view $pr_number --web
 	[[ $show ]] && gh pr view $pr_number
 else
