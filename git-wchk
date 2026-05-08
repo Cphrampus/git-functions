@@ -129,7 +129,10 @@ parse-args "$@"
 # todo add ability to pass in custom function, e.g., open review when checks pass, but also add a comment
 #x todo add ability to make draft, wait for checks, then open review
 teamMembers=(
-	$(gh api orgs/practicefusion/teams/svc-redwood/members -q ".[].login | select(. != \"$(git config user.name)\")")
+	# $(gh api orgs/practicefusion/teams/svc-redwood/members -q ".[].login | select(. != \"$(git config user.name)\")")
+	"apmattis"
+	"JieGitHubAccount"
+	"snadegouni-allscripts"
 
 	# "jkropapf"
 	# "tylerstarcher"
