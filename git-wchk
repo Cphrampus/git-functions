@@ -132,7 +132,7 @@ teamMembers=(
 	# $(gh api orgs/practicefusion/teams/svc-redwood/members -q ".[].login | select(. != \"$(git config user.name)\")")
 	"apmattis"
 	# "JieGitHubAccount"
-	"snadegouni-allscripts"
+	#"snadegouni-allscripts"
 
 	# "jkropapf"
 	# "tylerstarcher"
